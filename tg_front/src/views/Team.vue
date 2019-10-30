@@ -24,8 +24,8 @@ export default {
     data() {
         return {
             team: {
-                id: 0,
-                title: 'Команда - тест',
+                id: null,
+                title: null,
                 start: null,
                 finish: null
             },
@@ -45,9 +45,12 @@ export default {
 
     methods: {
         getTeam(id) {
-            this.$api.get('/team/qr/' + id)
+            this.$api.get('/team/get/' + id)
                 .then(response => {
-                    this.team = response.data;
+                    if(response.data.result){
+                        this.team.id = this.$route.params.id;
+                        this.team.title = response.data.title;
+                    }
                 })
                 .catch(error => {
                     this.error = error.response;
@@ -55,8 +58,8 @@ export default {
         },
         registration() {
             let data = {
-                'id': this.team.id,
-                'title': this.team.title
+                'id': this.$route.params.id,
+                'name': this.team.title
             };
             this.$api.post('/team/registration', data)
                 .then(response => {
