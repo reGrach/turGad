@@ -1,4 +1,5 @@
 from app import tur_app, db
+from flask import jsonify
 
 
 @tur_app.route('/team/qr/<int:team_id>')
@@ -8,4 +9,5 @@ def registration(team_id):
     if team == {}:
         return {}
     else:
-        return team
+        return jsonify(team)
+
