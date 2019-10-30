@@ -1,5 +1,7 @@
 ######################## BACK
 
+tg_back/app/config.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
