@@ -6,8 +6,10 @@ from flask import jsonify, request
 def registration():
     data = request.get_json()
     res = db.registration_team(data)
-    return res.__str__()
-
+    if res:
+        return jsonify({'result': True})
+    else:
+        return jsonify({'result': False})
 
 
 @tur_app.route('/team/get/<int:team_id>')

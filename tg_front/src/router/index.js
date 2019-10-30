@@ -3,9 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Team from '../views/Team.vue'
 
-
 Vue.use(VueRouter);
-
 const routes = [
   {
     path: '/',
@@ -28,7 +26,8 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  routes
+  mode: 'history',
+  routes: routes
 });
 
 export default router
