@@ -3,7 +3,7 @@ from flask import jsonify, request
 
 
 @tur_app.route('/team/registration', methods=['POST'])
-def registration():
+def registration_team():
     data = request.get_json()
     res = db.registration_team(data)
     if res:
