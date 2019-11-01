@@ -2,6 +2,7 @@ import MySQLdb
 from . import config
 from .static import queriesDB
 
+
 def get_all_stages():
     session = MySQLdb.connect(
         user=config.DB_USER,
@@ -105,11 +106,17 @@ def registration_stage(data):
         charset="utf8"
     )
     cursor = session.cursor()
-    sql = queriesDB.reg_stage(data['title'], data['code'])
+    sql_reg = queriesDB.reg_stage(data['title'], data['code'])
+    sql_get = queriesDB.get_stage_id(data['title'])
     try:
-        cursor.execute(sql)
+        cursor.execute(sql_reg)
         session.commit()
-        res = True
+        try:
+            cursor.execute(sql_get)
+            res = cursor.fetchone()[0]
+        except MySQLdb.Error as e:
+            print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
+            session.rollback()
     except MySQLdb.Error as e:
         print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
         session.rollback()

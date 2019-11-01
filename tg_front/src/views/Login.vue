@@ -7,7 +7,7 @@
                 <b-form-select
                         class="form-control"
                         id="input-stage"
-                        v-model="stage"
+                        v-model="stageId"
                         :options="stages"
                         required
                 ></b-form-select>
@@ -43,11 +43,12 @@
 
 <script>
 import { EventBus } from '@/utils'
+import { getAllStages } from '@/axios'
 export default {
     name: "Login",
     data() {
         return {
-            stage: null,
+            stageId: null,
             code: '',
             stages: [{ text: 'Выберите из списка:', value: null }],
             error: null
@@ -59,30 +60,35 @@ export default {
     },
 
     computed: {
+
+        stageTitle() {
+            let stage = this.stages.find(item => item.value === this.stageId);
+            if (stage) {
+                return stage.text;
+            } else return null;
+
+        },
+
         validCode() {
             let re =  /^\d{4}$/;
             return this.code.length === 4 && re.test(this.code);
         },
         validFrom() {
-            return this.validCode && this.stage
+            return this.validCode && this.stageId
         }
     },
 
     methods: {
-        // login() {
-        //     this.$store.dispatch('login', { id: this.stage, code: this.code })
-        //         .then(() => this.$router.push('/'))
-        // },
 
         login() {
-            const { stage, code } = this;
-            this.$store.dispatch('AUTH_REQUEST', { id: stage, code: code })
+            const { stageId, code } = this;
+            this.$store.dispatch('login', { id: stageId, title: this.stageTitle, code: code })
                 .then(() => this.$router.push('/'))
         },
 
 
         getAllStages(){
-            this.$api.get('/stages/getAll')
+            getAllStages()
                 .then((response) => {
                     if(response.data.result){
                         response.data.stages.forEach(stage => {

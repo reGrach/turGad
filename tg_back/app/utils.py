@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from functools import wraps
 from app import db
 import jwt
@@ -8,8 +8,7 @@ import jwt
 def token_required(f):
     @wraps(f)
     def _verify(*args, **kwargs):
-        auth_headers = request.headers.get('Authorization', '').split()
-
+        token = request.headers.get('Authorization')
         invalid_msg = {
             'message': 'Invalid token. Registration or authentication required',
             'authenticated': False
@@ -19,17 +18,16 @@ def token_required(f):
             'authenticated': False
         }
 
-        if len(auth_headers) != 2:
+        if not isinstance(token, str):
             return jsonify(invalid_msg), 401
 
         try:
-            token = auth_headers[1]
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             stage = db.get_stage_by_id(data['id'])
 
             if not stage:
                 raise RuntimeError('Этап не найден')
-            return f(stage, *args, **kwargs)
+            return f(data['id'], *args, **kwargs)
 
         except jwt.ExpiredSignatureError:
             # 401 is Unauthorized HTTP status code

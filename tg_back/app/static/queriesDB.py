@@ -38,6 +38,12 @@ def get_stage_by_id(id):
     return res
 
 
+def get_stage_id(title):
+    res = 'SELECT id ' \
+          'FROM Stages ' \
+          'WHERE title LIKE "{0}"'.format(title)
+    return res
+
 
 def get_team_by_id(id):
     res = 'SELECT t.id, t.title, mn.name, tm.mark, s.title ' \

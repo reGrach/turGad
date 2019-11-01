@@ -23,7 +23,14 @@ const routes = [
   {
     path: '/login',
     name: 'Страница входа',
-    component: Login
+    component: Login,
+    beforeEnter (to, from, next) {
+      if (store.getters.isAuthenticated) {
+        next('/')
+      } else {
+        next()
+      }
+    }
   },
   {
     path: '/registration',

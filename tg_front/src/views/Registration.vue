@@ -90,18 +90,6 @@ export default {
                     });
         },
 
-        getAllStages(){
-            this.$api.get('/stages/getAll')
-                .then(response => {
-                    if(response.data.result){
-                        this.stages.push(response.data.stages);
-                    }
-                })
-                .catch(error => {
-                    this.error = error.response;
-                })
-        },
-
         makeToast(text) {
             this.$bvToast.toast(text, {
                 title: 'Ошибка!',
