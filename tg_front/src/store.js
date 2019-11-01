@@ -16,7 +16,7 @@ export default new Vuex.Store({
         'AUTH_REQUEST': ({commit, dispatch}, stage) => {
             return new Promise((resolve, reject) => { // The Promise used for router redirect in login
                 commit('AUTH_REQUEST');
-                axios.post('http://127.0.0.1:5000/api/stages/login', stage)
+                axios.post('http://84.201.184.131:5000/api/stages/login', stage)
                     .then(resp => {
                         const token = resp.data.token;
                         localStorage.setItem('token', token); // store the token in localstorage
