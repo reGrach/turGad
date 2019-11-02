@@ -106,6 +106,7 @@ def registration_stage(data):
         charset="utf8"
     )
     cursor = session.cursor()
+    res = ''
     sql_reg = queriesDB.reg_stage(data['title'], data['code'])
     sql_get = queriesDB.get_stage_id(data['title'])
     try:
@@ -152,24 +153,3 @@ def set_mark(time, id_team, type_mark):
     finally:
         session.close()
         return res
-
-
-def get_f_mark(f_mark):
-    session = MySQLdb.connect(
-        user=config.DB_USER,
-        host=config.DB_HOST,
-        passwd=config.DB_PSW,
-        db=config.DB_NAME,
-        use_unicode=True,
-        charset="utf8"
-    )
-    cursor = session.cursor()
-    sql = queriesDB.get_f_mark(f_mark)
-    try:
-        cursor.execute(sql)
-        f_mark = cursor.fetchone()[0]
-    except MySQLdb.Error as e:
-        print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
-    finally:
-        session.close()
-        return f_mark

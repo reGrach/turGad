@@ -33,11 +33,12 @@ def get_start(team_id):
         return jsonify({'result': True, 'time': current_time})
 
 
-@tur_app.route('/api/team/setFinish')
-def get_finish(f_mark):
+@tur_app.route('/api/team/<int:team_id>/setFinish')
+def get_finish(team_id):
+    current_time = get_current_time()
     # Делаем запрос в БД
-    f_mark = db.get_f_mark(f_mark)
-    if isinstance(f_mark, str):
-        return jsonify({'result': False, 'msg': f_mark})
+    res_mark = db.set_mark(current_time, team_id, 3)
+    if isinstance(res_mark, str):
+        return jsonify({'result': False, 'msg': res_mark})
     else:
-        return jsonify({'result': True, 'time': f_mark})
+        return jsonify({'result': True, 'time': current_time})

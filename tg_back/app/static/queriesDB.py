@@ -1,6 +1,4 @@
 from werkzeug.security import generate_password_hash
-from datetime import datetime
-from app.api import team
 
 
 def get_mark_name():
@@ -37,19 +35,6 @@ def get_teamName_by_id(id):
           'WHERE id LIKE {0}'.format(id)
     return res
 
-
-def get_teamName_by_id(id):
-    res = 'SELECT name ' \
-          'FROM Teams ' \
-          'WHERE id LIKE {0}'.format(id)
-    return res
-
-
-# def get_f_mark(id):
-#     res = 'SELECT mark ' \
-#           'FROM TimeMarks ' \
-#           'WHERE id_MarkName LIKE 3'.format(id)
-#     return res
 
 
 def get_stage_by_id(id):
