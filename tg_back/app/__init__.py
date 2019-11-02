@@ -18,3 +18,5 @@ def create_app():
     def check_work():
         return '1'
     return app
+
+tur_app = create_app()

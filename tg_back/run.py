@@ -1,5 +1,4 @@
-from app import create_app
+from app import tur_app
 
 if __name__ == '__main__':
-    tur_app = create_app()
     tur_app.run()
