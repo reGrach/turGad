@@ -25,10 +25,9 @@ def token_required(f):
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             stage = db.get_stage_by_id(data['id'])
-
             if not stage:
                 raise RuntimeError('Этап не найден')
-            return f(data['id'], *args, **kwargs)
+            return f(stage['id'], *args, **kwargs)
 
         except jwt.ExpiredSignatureError:
             # 401 is Unauthorized HTTP status code

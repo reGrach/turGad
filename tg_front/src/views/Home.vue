@@ -14,6 +14,11 @@
 import { checkToken } from '@/axios'
 export default {
   name: 'home',
+    data() {
+        return {
+            error: null
+        }
+    },
   // components: {
   //   HelloWorld
   // }
@@ -26,7 +31,7 @@ export default {
 
     check() {
       const { id } = this.$store.state;
-      checkToken(id).then(resp => console.log(resp.data))
+      checkToken(id).then(resp => this.error = resp.data)
     }
   }
 }

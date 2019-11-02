@@ -102,11 +102,11 @@
 
             calcDeltaMillisec() {
                 let ct = this.team.start.split(':');
-                return new Date().setHours(ct[0], ct[1], ct[2]) - new Date().getTime() + 2*60*60*1000;
+                return new Date().setHours(ct[0], ct[1], ct[2]) - new Date().getTime() + 2 * 60 * 60 * 1000;
             },
 
             getStrControlTime() {
-                let time = new Date(this.controlTime).getTime() - 3*60*60*1000;
+                let time = new Date(this.controlTime).getTime() - 3 * 60 * 60 * 1000;
                 let minutes = 0;
                 if (new Date(time).getHours() > 0)
                     minutes = 60 * new Date(time).getHours() + Number(new Date(time).getMinutes());
@@ -172,13 +172,9 @@
                                     this.team.finish = resp.data.finish;
                                     this.stopTimer();
                                 }
-
                             }
-
                         })
-                        .catch(error => {
-                            console.log(error.response)
-                        })
+                        .catch(error => this.error = error.response.data)
                 }
 
             },
