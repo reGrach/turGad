@@ -1,6 +1,6 @@
 import MySQLdb
 from . import config
-from .static import queriesDB
+from app import queriesDB
 
 
 def get_all_stages():
