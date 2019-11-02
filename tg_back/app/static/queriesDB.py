@@ -52,13 +52,11 @@ def get_stage_id(title):
 
 
 def get_team_by_id(id):
-    res = 'SELECT t.id, t.title, mn.name, tm.mark, s.title ' \
+    res = 'SELECT t.name AS "TeamName", mn.id, tm.mark, s.title AS "stageName" ' \
           'FROM Teams AS t ' \
           'JOIN TimeMarks AS tm ON t.id = tm.id_Team ' \
           'JOIN MarkName AS mn ON tm.id_MarkName = mn.id ' \
-          'LEFT JOIN Stages AS s ON tm.id_Stage = s.id' \
+          'LEFT JOIN Stages AS s ON tm.id_Stage = s.id ' \
           'WHERE t.id LIKE {0}'.format(id)
     return res
-
-
 

@@ -88,6 +88,7 @@ export default new Vuex.Store({
 
     getters: {
         isAuthenticated: state => isValidJwt(state.token),
+        isMain: state => state.stageTitle === 'Древний этап',
         authStatus: state => state.status,
     }
 })

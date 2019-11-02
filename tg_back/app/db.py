@@ -37,16 +37,51 @@ def get_team_by_id(id):
         charset="utf8"
     )
     cursor = session.cursor()
-    sql = queriesDB.get_teamName_by_id(id)
-    team_name = ''
+    sql = queriesDB.get_team_by_id(id)
+    res = None
     try:
         cursor.execute(sql)
-        team_name = cursor.fetchone()[0]
+        team_info = cursor.fetchall()
+        marks = []
+        start = ''
+        finish = ''
+        for it in team_info:
+            if it[1] == 2:
+                marks.append(dict(time=str(it[2]), stage=it[3]))
+            elif it[1] == 1:
+                start = str(it[2])
+            elif it[1] == 3:
+                finish = str(it[2])
+        res = dict(title=team_info[0][0], start=start, finish=finish, marks=marks)
     except MySQLdb.Error as e:
         print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
+        res = 'code error: {0}'.format(e.args[0])
     finally:
         session.close()
-        return team_name
+        return res
+
+
+def get_title_team_by_id(id):
+    session = MySQLdb.connect(
+        user=config.DB_USER,
+        host=config.DB_HOST,
+        passwd=config.DB_PSW,
+        db=config.DB_NAME,
+        use_unicode=True,
+        charset="utf8"
+    )
+    cursor = session.cursor()
+    sql = queriesDB.get_teamName_by_id(id)
+    res = None
+    try:
+        cursor.execute(sql)
+        res = cursor.fetchone()[0]
+    except MySQLdb.Error as e:
+        print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
+        res = 'code error: {0}'.format(e.args[0])
+    finally:
+        session.close()
+        return res
 
 
 def get_stage_by_id(id):
@@ -60,16 +95,17 @@ def get_stage_by_id(id):
     )
     cursor = session.cursor()
     sql = queriesDB.get_stage_by_id(id)
-    stage = None
+    res = None
     try:
         cursor.execute(sql)
-        res = cursor.fetchone()
-        stage = dict(id=res[0], title=res[1], hashcode=res[2])
+        stage = cursor.fetchone()
+        res = dict(id=stage[0], title=stage[1], hashcode=stage[2])
     except MySQLdb.Error as e:
         print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
+        res = 'code error: {0}'.format(e.args[0])
     finally:
         session.close()
-        return stage
+        return res
 
 
 def registration_team(data):
@@ -90,6 +126,7 @@ def registration_team(data):
         res = True
     except MySQLdb.Error as e:
         print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
+        res = 'code error: {0}'.format(e.args[0])
         session.rollback()
     finally:
         session.close()
@@ -106,7 +143,6 @@ def registration_stage(data):
         charset="utf8"
     )
     cursor = session.cursor()
-    res = ''
     sql_reg = queriesDB.reg_stage(data['title'], data['code'])
     sql_get = queriesDB.get_stage_id(data['title'])
     try:
@@ -117,7 +153,7 @@ def registration_stage(data):
             res = cursor.fetchone()[0]
         except MySQLdb.Error as e:
             print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
-            session.rollback()
+            res = 'code error: {0}'.format(e.args[0])
     except MySQLdb.Error as e:
         print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
         session.rollback()
@@ -150,6 +186,7 @@ def set_mark(time, id_team, type_mark):
     except MySQLdb.Error as e:
         print("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
         res = 'code error: {0}'.format(e.args[0])
+        session.rollback()
     finally:
         session.close()
         return res

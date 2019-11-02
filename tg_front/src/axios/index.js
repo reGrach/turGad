@@ -33,3 +33,9 @@ export function registerStage(data) {
 export function checkToken() {
     return instance.post('/stages/check')
 }
+
+export function setEndMark(isStart, id_team) {
+    const data = {id: id_team};
+    const endUrl = isStart ? 'setFinish' : 'setStart';
+    return instance.post('/team/' + endUrl, data)
+}
