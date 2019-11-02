@@ -39,7 +39,7 @@ def registration_stage():
 
 @tur_app.route('/api/stages/check', methods=['POST'])
 @token_required
-def check(stage):
-    print(stage)
+def check(id_stage):
+    print(id_stage)
     return jsonify({'result': True}), 200
 

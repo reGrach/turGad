@@ -1,6 +1,7 @@
 from flask import request, jsonify, current_app
 from werkzeug.security import check_password_hash
 from functools import wraps
+from datetime import datetime
 from app import db
 import jwt
 
@@ -51,3 +52,8 @@ def authenticate(data):
             return None
 
         return user
+
+
+def get_current_time():
+    now = datetime.now()
+    return now.strftime("%H:%M:%S")
