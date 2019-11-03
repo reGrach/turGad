@@ -27,92 +27,88 @@
                         placeholder="Введите пин-код..."
                 ></b-form-input>
             </b-form-group>
-
             <b-button block type="button" :disabled="!validFrom" variant="primary" @click="login">Войти</b-button>
-
             <div class="text-center" style="margin-top: 10px">
                 У тебя еще нет этапа?
-                <b-link href="/registration"> Исправляй! </b-link>
+                <b-link href="/registration"> Исправляй!</b-link>
             </div>
-
         </b-form>
-
-
     </div>
 </template>
 
 <script>
-import { EventBus } from '@/utils'
-import { getAllStages } from '@/axios'
-export default {
-    name: "Login",
-    data() {
-        return {
-            stageId: null,
-            code: '',
-            stages: [{ text: 'Выберите из списка:', value: null }],
-            error: null
-        }
-    },
+    import {EventBus} from '@/utils'
+    import {getAllStages} from '@/axios'
 
-    created() {
-        this.getAllStages();
-    },
-
-    computed: {
-
-        stageTitle() {
-            let stage = this.stages.find(item => item.value === this.stageId);
-            if (stage) {
-                return stage.text;
-            } else return null;
-
+    export default {
+        name: "Login",
+        data() {
+            return {
+                stageId: null,
+                code: '',
+                stages: [{text: 'Выберите из списка:', value: null}],
+                error: null
+            }
         },
 
-        validCode() {
-            let re =  /^\d{4}$/;
-            return this.code.length === 4 && re.test(this.code);
-        },
-        validFrom() {
-            return this.validCode && this.stageId
-        }
-    },
-
-    methods: {
-
-        login() {
-            const { stageId, code } = this;
-            this.$store.dispatch('login', { id: stageId, title: this.stageTitle, code: code })
-                .then(() => this.$router.push('/'))
+        created() {
+            this.getAllStages();
         },
 
+        computed: {
 
-        getAllStages(){
-            getAllStages()
-                .then((response) => {
-                    if(response.data.result){
-                        response.data.stages.forEach(stage => {
-                            this.stages.push({text: stage.text, value: stage.value});
-                        });
-                    }
-                })
-                .catch(error => {
-                    this.error = error.response;
-                })
+            stageTitle() {
+                let stage = this.stages.find(item => item.value === this.stageId);
+                if (stage) {
+                    return stage.text;
+                } else return null;
+
+            },
+
+            validCode() {
+                let re = /^\d{4}$/;
+                return this.code.length === 4 && re.test(this.code);
+            },
+            validFrom() {
+                return this.validCode && this.stageId
+            }
+        },
+
+        methods: {
+
+            login() {
+                const {stageId, code} = this;
+                this.$store.dispatch('login', {id: stageId, title: this.stageTitle, code: code})
+                    .then(() => this.$router.push('/'))
+            },
+
+
+            getAllStages() {
+                getAllStages()
+                    .then((response) => {
+                        if (response.data.result) {
+                            response.data.stages.forEach(stage => {
+                                this.stages.push({text: stage.text, value: stage.value});
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        this.error = error.response;
+                    })
+            }
+        },
+
+        mounted() {
+            EventBus.$on('failedAuthentication', (msg) => {
+                this.errorMsg = msg;
+            })
+        },
+
+        beforeDestroy() {
+            EventBus.$off('failedAuthentication');
         }
-    },
 
-    mounted () {
-        EventBus.$on('failedAuthentication', (msg) => {
-            this.errorMsg = msg;
-        })
-    },
-
-    beforeDestroy () {
-        EventBus.$off('failedAuthentication');
     }
-
-}
 </script>
 
 <style scoped>
@@ -128,6 +124,7 @@ export default {
         padding: 15px;
         margin: auto;
     }
+
     .form-signin .form-control {
         position: relative;
         box-sizing: border-box;
@@ -135,6 +132,7 @@ export default {
         padding: 10px;
         font-size: 16px;
     }
+
     .form-signin .form-control:focus {
         z-index: 2;
     }
