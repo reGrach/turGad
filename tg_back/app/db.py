@@ -62,10 +62,22 @@ def registration_team(id_team, name):
 def get_team_by_id(id_team):
     sql = queriesDB.get_team_by_id(id_team)
     result_query = get_from_db(sql)
-    if isinstance(result_query, str):
+    if isinstance(result_query, str) or result_query is None:
         return result_query
 
     return dict(id=result_query[0], title=result_query[1])
+
+
+def get_teams_without_stage(id_stage):
+    sql = queriesDB.get_teams_without_stage(id_stage)
+
+    result_query = get_from_db(sql, False)
+    if isinstance(result_query, str):
+        return result_query
+    teams = []
+    for team in result_query:
+        teams.append(dict(id=team[0], name=team[1]))
+    return teams
 
 # </editor-fold>
 
@@ -89,7 +101,7 @@ def get_all_stages():
 
 
 def get_stage_id_by_title(title):
-    sql = queriesDB.get_stage_by_id(title)
+    sql = queriesDB.get_stage_by_title(title)
     result_query = get_from_db(sql)
 
     if isinstance(result_query, str):
@@ -114,17 +126,17 @@ def get_stage_by_id(id_stage):
 # <editor-fold desc="FIXATIONS">
 def set_end_fix_to_team(time, id_team, type):
     sql = queriesDB.set_end_fixation(time, id_team, type)
+    print(sql)
     return insert_to_db(sql)
 
 
 def get_end_fix_team(id_team, type):
     sql = queriesDB.get_end_fix_team(id_team, type)
     result_query = get_from_db(sql)
-
-    if isinstance(result_query, str):
+    if result_query is None:
         return result_query
 
-    return result_query[0]
+    return str(result_query[0])
 
 
 def get_all_fix_stage_team(id_team):

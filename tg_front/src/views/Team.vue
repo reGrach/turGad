@@ -36,14 +36,20 @@
                     </h3>
                 </b-row>
                 <b-row>
-                    <h3>Контрольное время:
+                    <h3> {{titleTime}}
                         <b-badge variant="success">{{getStrControlTime}}</b-badge>
                     </h3>
                 </b-row>
             </b-container>
 
             <div v-if="this.$store.getters.isAuthenticated">
-                <b-button variant="success" @click="fixStage" block>{{stageType}}</b-button>
+                <b-button
+                        variant="outline-primary"
+                        v-if="!this.team.finish"
+                        @click="fixStage"
+                        block>
+                    {{stageType}}
+                </b-button>
                 <hr>
             </div>
 
@@ -69,7 +75,6 @@
 
                 controlTime: new Date(0).setMinutes(120),
                 timer: null,
-
                 error: null,
             }
         },
@@ -97,12 +102,22 @@
                 if (this.$store.getters.isMain) {
                     if (this.team.start) return 'Финиш';
                     else return 'Старт';
-                } else return 'Пройти этап';
+                } else return 'Зафиксировать этап';
             },
 
-            calcDeltaMillisec() {
+            calcDeltaMilliseconds() {
                 let ct = this.team.start.split(':');
                 return new Date().setHours(ct[0], ct[1], ct[2]) - new Date().getTime() + 2 * 60 * 60 * 1000;
+            },
+
+            calcDeltaStartFinish() {
+                let ctS = this.team.start.split(':');
+                let ctF = this.team.finish.split(':');
+                return new Date().setHours(ctF[0], ctF[1], ctF[2]) - new Date().setHours(ctS[0], ctS[1], ctS[2])
+            },
+
+            titleTime() {
+                return !this.team.finish ? 'Контрольное время:' : 'Время забега:'
             },
 
             getStrControlTime() {
@@ -126,15 +141,14 @@
                 getTeamById(id)
                     .then(response => {
                         if (response.data.result) {
-                            this.team.id = this.$route.params.id;
-                            this.team.title = response.data.team.title;
-                            this.team.start = response.data.team.start;
-                            this.team.finish = response.data.team.finish;
-                            if (this.team.start && this.team.finish === '') {
-                                this.controlTime = this.calcDeltaMillisec;
+                            this.team = response.data.team;
+                            if (this.team.start && !this.team.finish) {
+                                this.controlTime = this.calcDeltaMilliseconds;
                                 this.startTimer();
                             }
-
+                            else {
+                                this.controlTime = this.calcDeltaStartFinish;
+                            }
                         } else {
                             this.team.id = null
                         }
@@ -152,6 +166,7 @@
                 registerTeam(team)
                     .then(response => {
                         this.team = response.data;
+                        location.reload();
                     })
                     .catch(error => {
                         this.error = error.response;
@@ -163,15 +178,7 @@
                     setEndMark(this.team.start, this.team.id)
                         .then(resp => {
                             if (resp.data.result) {
-                                if (resp.data.start) {
-                                    this.team.start = resp.data.start;
-                                    this.this.controlTime = this.calcDeltaMillisec;
-                                    this.startTimer();
-                                }
-                                if (resp.data.finish) {
-                                    this.team.finish = resp.data.finish;
-                                    this.stopTimer();
-                                }
+                                location.reload();
                             }
                         })
                         .catch(error => this.error = error.response.data)

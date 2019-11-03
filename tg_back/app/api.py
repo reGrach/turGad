@@ -22,7 +22,9 @@ def registration_team():
 @api.route('/team/get/<int:team_id>', methods=['GET'])
 def get_team(team_id):
     team = db.get_team_by_id(team_id)
-    if isinstance(team, str):
+    if team is None:
+        return jsonify({'result': False})
+    elif isinstance(team, str):
         return jsonify({'result': False, 'msg': team})
     else:
         team['start'] = db.get_end_fix_team(team_id, 'start')
@@ -30,15 +32,14 @@ def get_team(team_id):
         return jsonify({'result': True, 'team': team})
 
 
-# @api.route('/team/getUnpassTeam', methods=['GET'])
-# @token_required
-# def set_finish(stage_id):
-#     # Делаем запрос в БД
-#     teams = db.get_teams_without_stage(stage_id)
-#     if isinstance(teams, str):
-#         return jsonify({'result': False, 'msg': teams})
-#     else:
-#         return jsonify({'result': True, 'teams': teams})
+@api.route('/team/getUnpassTeam', methods=['GET'])
+@token_required
+def get_unpass_teams(stage_id):
+    teams = db.get_teams_without_stage(stage_id)
+    if isinstance(teams, str):
+        return jsonify({'result': False, 'msg': teams})
+    else:
+        return jsonify({'result': True, 'teams': teams})
 
 # </editor-fold>
 
@@ -80,25 +81,25 @@ def registration_stage():
 # <editor-fold desc="API FIXATIONS">
 @api.route('/fixation/setStart', methods=['POST'])
 @token_required
-def set_start(id):
+def set_start(stage_id):
     data = request.get_json()
     current_time = get_current_time()
     res = db.set_end_fix_to_team(current_time, data.get('id'), 1)
     if isinstance(res, str):
         return jsonify({'result': False, 'msg': res})
     else:
-        return jsonify({'result': True, 'start': current_time})
+        return jsonify({'result': True})
 
 
 @api.route('/fixation/setFinish', methods=['POST'])
 @token_required
-def set_finish(id):
+def set_finish(stage_id):
     data = request.get_json()
     current_time = get_current_time()
     res = db.set_end_fix_to_team(current_time, data.get('id'), 2)
     if isinstance(res, str):
         return jsonify({'result': False, 'msg': res})
     else:
-        return jsonify({'result': True, 'finish': current_time})
+        return jsonify({'result': True})
 
 # </editor-fold>
