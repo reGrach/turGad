@@ -26,7 +26,8 @@ def insert_to_db(sql):
         session.close()
         return res
 
-def get_from_db(sql, is_one = True):
+
+def get_from_db(sql, is_one=True):
     res = ''
     session = MySQLdb.connect(
         user=config.DB_USER,
@@ -101,8 +102,8 @@ def get_stage_by_id(id_stage):
 
 
 # <editor-fold desc="FIXATIONS">
-def set_end_fix_to_team(time, id_team, type_mark):
-    sql = queriesDB.set_end_fixation(time, id_team, type_mark)
+def set_end_fix_to_team(time, id_team, type):
+    sql = queriesDB.set_end_fixation(time, id_team, type)
     return insert_to_db(sql)
 
 
@@ -126,7 +127,15 @@ def get_all_fix_stage_team(id_team):
     for fix in result_query:
         fixs.append(dict(time=str(fix[0]), stage=fix[1]))
     return fixs
+
+
+def send_fix_stages_to_team(time, id_team, id_stage, bonus, fine):
+    sql = queriesDB.set_stage_fixation(time, id_team, id_stage, bonus, fine)
+    return insert_to_db(sql)
+
 # </editor-fold>
+
+
 
 
     # sql_get = queriesDB.get_stage_id(data['title'])
