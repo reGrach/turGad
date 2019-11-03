@@ -19,3 +19,5 @@ def create_app():
         return '1'
     return app
 
+
+tur_app = create_app()
