@@ -88,6 +88,16 @@ def get_all_stages():
     return list_stages
 
 
+def get_stage_id_by_title(title):
+    sql = queriesDB.get_stage_by_id(title)
+    result_query = get_from_db(sql)
+
+    if isinstance(result_query, str):
+        return result_query
+
+    return result_query[0]
+
+
 def get_stage_by_id(id_stage):
     sql = queriesDB.get_stage_by_id(id_stage)
     result_query = get_from_db(sql)

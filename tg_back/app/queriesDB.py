@@ -12,6 +12,7 @@ def get_team_by_id(id_team):
 
 # </editor-fold>
 
+
 # <editor-fold desc="STAGE">
 def reg_stage(t, c):
     values = [t, generate_password_hash(c, method='sha256')]
@@ -22,15 +23,17 @@ def get_stage_by_id(id_stage):
     return 'SELECT * FROM Stages WHERE id LIKE {0}'.format(id_stage)
 
 
+def get_stage_by_id(title):
+    return 'SELECT id FROM Stages WHERE title LIKE "{0}"'.format(title)
+
+
 def get_all_stages():
     return 'SELECT id, title FROM Stages'
 
-
 # </editor-fold>
 
+
 # <editor-fold desc="FIXATIONS">
-
-
 def set_end_fixation(time, i, t):
     values = [time, i,  t]
     return 'INSERT INTO Fixations(mark, id_Team, id_MarkName) ' \
