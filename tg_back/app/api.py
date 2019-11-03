@@ -7,6 +7,16 @@ from flask import Blueprint
 
 api = Blueprint("api", __name__)
 
+# <editor-fold desc="API TEAM">
+@api.route('/team/registration', methods=['POST'])
+def registration_team():
+    data = request.get_json()
+    res = db.registration_team(data)
+    if res:
+        return jsonify({'result': True})
+    else:
+        return jsonify({'result': False})
+
 
 @api.route('/team/registration', methods=['POST'])
 def registration_team():
@@ -39,7 +49,6 @@ def set_start(id):
     data = request.get_json()
     current_time = get_current_time()
     res_mark = db.set_mark(current_time, data.get('id'), 1)
-
     if isinstance(res_mark, str):
         return jsonify({'result': False, 'msg': res_mark})
     else:
@@ -58,6 +67,19 @@ def set_finish(id):
     else:
         return jsonify({'result': True, 'finish': current_time})
 
+@api.route('/team/getUnpassTeam', methods=['GET'])
+@token_required
+def set_finish(stage_id):
+    # Делаем запрос в БД
+    teams = db.get_teams_without_stage(stage_id)
+    if isinstance(teams, str):
+        return jsonify({'result': False, 'msg': teams})
+    else:
+        return jsonify({'result': True, 'teams': teams})
+
+# </editor-fold>
+
+# <editor-fold desc="API STAGE">
 
 @api.route('/stages/login', methods=['POST'])
 def login_stage():
@@ -77,7 +99,6 @@ def login_stage():
 @api.route('/stages/getAll', methods=['GET'])
 def get_all_stages():
     stages = db.get_all_stages()
-    print(stages)
     return jsonify({'result': True, 'stages': stages})
 
 
@@ -97,3 +118,4 @@ def check(id_stage):
     print(id_stage)
     return jsonify({'result': True}), 200
 
+# </editor-fold>
