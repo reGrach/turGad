@@ -102,4 +102,16 @@ def set_finish(stage_id):
     else:
         return jsonify({'result': True})
 
+
+@api.route('/fixation/setFixationStage', methods=['POST'])
+@token_required
+def set_fixation_stage(stage_id):
+    data = request.get_json()
+    current_time = get_current_time()
+    res = db.send_fix_stages_to_team(current_time, data.get('id_team'), stage_id, data.get('bonus'), data.get('fine'))
+    if isinstance(res, str):
+        return jsonify({'result': False, 'msg': res})
+    else:
+        return jsonify({'result': True})
+
 # </editor-fold>

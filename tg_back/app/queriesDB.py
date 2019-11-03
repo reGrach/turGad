@@ -53,10 +53,10 @@ def set_end_fixation(time, i, t):
            'VALUES("{0[0]}", {0[1]}, {0[2]})'.format(values)
 
 
-def set_stage_fixation(time, i, t, ist, b, f):
-    values = [time, i,  t, ist, b, f]
+def set_stage_fixation(time, id_team, id_stage, bonus, fine):
+    values = [time, id_team, id_stage, bonus, fine]
     return 'INSERT INTO Fixations (mark, id_Team, id_FixationType, id_Stage, bonus, fine) ' \
-           'VALUES("{0[0]}", {0[1]}, 3, {0[3]}, {0[4]}, {0[5]})'.format(values)
+           'VALUES("{0[0]}", {0[1]}, 3, {0[2]}, {0[3]}, {0[4]})'.format(values)
 
 
 def get_all_fix_stage_team(id_team):
